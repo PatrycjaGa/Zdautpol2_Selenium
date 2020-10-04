@@ -1,3 +1,4 @@
+import devToPages.DevToMainPage;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
@@ -28,18 +29,17 @@ public class BaseTest {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\Ja\\Desktop\\Patrycja\\Dokumenty\\KURS\\chromedriver\\chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        String devToUrl = "https://dev.to/";
-        driver.get(devToUrl);
+
         wait = new WebDriverWait(driver, 20);
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     @Test
     public void selectFirstPostFromWeek() {
+        DevToMainPage devToMainPage = new DevToMainPage(driver);
+        devToMainPage.goToWeekPage();
 
-        WebElement week = driver.findElement(By.xpath("//a[@href='/top/week']"));
-//        highlightElement(driver, week);
-        week.click();
+
         wait.until(ExpectedConditions.urlToBe("https://dev.to/top/week"));
         WebElement firstPostOnWeek = driver.findElement(By.cssSelector("h2.crayons-story__title > a"));
         String firstPostOnWeekText = firstPostOnWeek.getText();
