@@ -58,24 +58,32 @@ public class BaseTest {
         WebElement searchBox = driver.findElement(By.id("nav-search"));
         highlightElement(driver, searchBox);
         String searchText = "testing";
+        String cssSelector = "h2.crayons-story__title > a";
         searchBox.sendKeys(searchText);
         searchBox.sendKeys(Keys.ENTER);
         String searchUrl = "https://dev.to/search?q=";
         String searchingUrlWIthText = searchUrl + searchText;
         wait.until(ExpectedConditions.urlToBe(searchingUrlWIthText));
-        ArrayList<WebElement> postTilesList = (ArrayList<WebElement>) driver.findElements(By.cssSelector("h2.crayons-story__title > a"));
-//        for (int i = 0; i <3; i ++){
-//            WebElement element = postTilesList.get(i);
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
+        List<WebElement> postTilesList =  driver.findElements(By.cssSelector(cssSelector));
+        for (int i = 0; i <3; i ++){
+            WebElement element = postTilesList.get(i);
+            String elementText = element.getText().toLowerCase();
+            assertTrue("there;s no searching value in post titles", elementText.contains(searchText));
+        }
+//        WebElement element = postTilesList.get(0);
 //            String elementText = element.getText();
 //            assertTrue("there;s no searching value in post titles", elementText.contains(searchText));
-//        }
-        WebElement element = postTilesList.get(0);
-            String elementText = element.getText();
-            assertTrue("there;s no searching value in post titles", elementText.contains(searchText));
 
 
     }
 
     @Test
-    
+    public void findJavaInNavBar(){
+        WebElement java = driver.findElement(By.cssSelector("div#default-sidebar-element-java > a"));
+        highlightElement(driver, java);
+        java.click();
+    }
+
+
 }
