@@ -1,5 +1,6 @@
 package devToPages;
 
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -16,6 +17,9 @@ public class DevToMainPage {
     @FindBy(xpath = "//a[@href='/top/week']")
     WebElement week;
 
+    @FindBy(id = "nav-search")
+    WebElement searchBox;
+
     public DevToMainPage(WebDriver driver, WebDriverWait wait){
         this.driver = driver;
         this.wait = wait;
@@ -28,6 +32,13 @@ public class DevToMainPage {
         week.click();
         wait.until(ExpectedConditions.urlToBe(week.getAttribute("href")));
         return new DevToWeekPage(driver, wait);
+    }
+
+    public DevToSearchResultsPage search(String searchText){
+        searchBox.sendKeys(searchText);
+        searchBox.sendKeys(Keys.ENTER);
+
+        return new DevToSearchResultsPage(this.driver, this.wait);
     }
 
 }

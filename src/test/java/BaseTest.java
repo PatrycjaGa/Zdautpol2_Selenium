@@ -1,3 +1,4 @@
+import devToPages.DevToSearchResultsPage;
 import devToPages.DevToMainPage;
 import devToPages.DevToSinglePostPage;
 import devToPages.DevToWeekPage;
@@ -58,21 +59,20 @@ public class BaseTest {
 
     @Test
     public void searchBarTesting() {
-        WebElement searchBox = driver.findElement(By.id("nav-search"));
-        highlightElement(driver, searchBox);
+
+        DevToMainPage devToMainPage = new DevToMainPage(driver, wait);
         String searchText = "testing";
-        String cssSelector = "h2.crayons-story__title > a";
-        searchBox.sendKeys(searchText);
-        searchBox.sendKeys(Keys.ENTER);
-        String searchUrl = "https://dev.to/search?q=";
-        String searchingUrlWIthText = searchUrl + searchText;
-        wait.until(ExpectedConditions.urlToBe(searchingUrlWIthText));
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
-        List<WebElement> postTilesList = driver.findElements(By.cssSelector(cssSelector));
-        for (int i = 0; i < 3; i++) {
-            WebElement element = postTilesList.get(i);
-            String elementText = element.getText().toLowerCase();
-            assertTrue("there;s no searching value in post titles", elementText.contains(searchText));
+        DevToSearchResultsPage devToSearchResultsPage = devToMainPage.search(searchText);
+
+        String searchingUrlWithText = devToSearchResultsPage.url + searchText;
+        wait.until(ExpectedConditions.urlToBe(searchingUrlWithText));
+
+        ArrayList<String> postTilesList = devToSearchResultsPage.getTopThreePostTiles();
+        int i = 0;
+        while (i < 3) {
+            String postTileText = postTilesList.get(i).toLowerCase();
+            assertTrue("there;s no searching value in post titles", postTileText.contains(searchText));
+            i++;
         }
     }
 
