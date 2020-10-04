@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -30,10 +31,11 @@ public class BaseTest {
         String devToUrl = "https://dev.to/";
         driver.get(devToUrl);
         wait = new WebDriverWait(driver, 20);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
 
     @Test
-    public void firstTest() {
+    public void selectFirstPostFromWeek() {
 
         WebElement week = driver.findElement(By.xpath("//a[@href='/top/week']"));
 //        highlightElement(driver, week);
@@ -65,24 +67,39 @@ public class BaseTest {
         String searchingUrlWIthText = searchUrl + searchText;
         wait.until(ExpectedConditions.urlToBe(searchingUrlWIthText));
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
-        List<WebElement> postTilesList =  driver.findElements(By.cssSelector(cssSelector));
-        for (int i = 0; i <3; i ++){
+        List<WebElement> postTilesList = driver.findElements(By.cssSelector(cssSelector));
+        for (int i = 0; i < 3; i++) {
             WebElement element = postTilesList.get(i);
             String elementText = element.getText().toLowerCase();
             assertTrue("there;s no searching value in post titles", elementText.contains(searchText));
         }
-//        WebElement element = postTilesList.get(0);
-//            String elementText = element.getText();
-//            assertTrue("there;s no searching value in post titles", elementText.contains(searchText));
-
-
     }
 
     @Test
-    public void findJavaInNavBar(){
+    public void findJavaInNavBar() {
         WebElement java = driver.findElement(By.cssSelector("div#default-sidebar-element-java > a"));
         highlightElement(driver, java);
         java.click();
+    }
+
+    @Test
+    public void findPodcast() {
+        WebElement podcast = driver.findElement(By.xpath("//a[@href='/pod']"));
+        podcast.click();
+        wait.until(ExpectedConditions.urlToBe("https://dev.to/pod"));
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.tagName("h3")));
+        List<WebElement> podcastsList = driver.findElements(By.tagName("h3"));
+        podcastsList.get(3).click();
+        wait.until(ExpectedConditions.urlContains("stackpodcast"));
+        WebElement playArea = driver.findElement(By.className("record-wrapper"));
+        playArea.click();
+        WebElement initializing = driver.findElement(By.className("status-message"));
+        wait.until(ExpectedConditions.invisibilityOf(initializing));
+        String playAreaClassAttribute = playArea.getAttribute("class");
+        boolean isPlaying = playAreaClassAttribute.contains("playing");
+
+        assertTrue("Podcast isn't playing", isPlaying);
+
     }
 
 
