@@ -7,27 +7,26 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class DevToMainPage {
-
+public class DevToWeekPage {
     WebDriver driver;
-    String url = "https://dev.to/";
+    String url = "https://dev.to/top/week";
     WebDriverWait wait;
 
-    @FindBy(xpath = "//a[@href='/top/week']")
-    WebElement week;
+    @FindBy(css = "h2.crayons-story__title > a" )
+    public  WebElement firstPostOnWeek;
 
-    public DevToMainPage(WebDriver driver, WebDriverWait wait){
+    public DevToWeekPage(WebDriver driver, WebDriverWait wait){
         this.driver = driver;
         this.wait = wait;
-        driver.get(url);
         PageFactory.initElements(driver, this);
-
     }
 
-    public DevToWeekPage goToWeekPage(){
-        week.click();
-        wait.until(ExpectedConditions.urlToBe(week.getAttribute("href")));
-        return new DevToWeekPage(driver, wait);
+    public DevToSinglePostPage selectFirstPost(){
+        wait.until(ExpectedConditions.urlToBe(this.url));
+        firstPostOnWeek.click();
+        return new DevToSinglePostPage(this.driver, this.wait);
     }
+
 
 }
+
