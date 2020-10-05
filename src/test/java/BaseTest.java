@@ -1,7 +1,4 @@
-import devToPages.DevToSearchResultsPage;
-import devToPages.DevToMainPage;
-import devToPages.DevToSinglePostPage;
-import devToPages.DevToWeekPage;
+import devToPages.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.*;
@@ -85,20 +82,11 @@ public class BaseTest {
 
     @Test
     public void findPodcast() {
-        WebElement podcast = driver.findElement(By.xpath("//a[@href='/pod']"));
-        podcast.click();
-        wait.until(ExpectedConditions.urlToBe("https://dev.to/pod"));
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.tagName("h3")));
-        List<WebElement> podcastsList = driver.findElements(By.tagName("h3"));
-        podcastsList.get(3).click();
-        wait.until(ExpectedConditions.urlContains("stackpodcast"));
-        WebElement playArea = driver.findElement(By.className("record-wrapper"));
-        playArea.click();
-        WebElement initializing = driver.findElement(By.className("status-message"));
-        wait.until(ExpectedConditions.invisibilityOf(initializing));
-        String playAreaClassAttribute = playArea.getAttribute("class");
-        boolean isPlaying = playAreaClassAttribute.contains("playing");
-
+        DevToMainPage devToMainPage = new DevToMainPage(driver, wait);
+        DevToPodcastsPage devToPodcastsPage = devToMainPage.goToPodcasts();
+        DevToSinglePodcastPage devToSinglePodcastPage = devToPodcastsPage.selectFourthPodcast();
+        devToSinglePodcastPage.playPodcast();
+        boolean isPlaying = devToSinglePodcastPage.checkThatIsPlaying();
         assertTrue("Podcast isn't playing", isPlaying);
 
     }

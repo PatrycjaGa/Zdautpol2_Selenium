@@ -20,12 +20,14 @@ public class DevToMainPage {
     @FindBy(id = "nav-search")
     WebElement searchBox;
 
+    @FindBy(xpath = "//a[@href='/pod']")
+    WebElement podcastButton;
+
     public DevToMainPage(WebDriver driver, WebDriverWait wait){
         this.driver = driver;
         this.wait = wait;
         driver.get(url);
         PageFactory.initElements(driver, this);
-
     }
 
     public DevToWeekPage goToWeekPage(){
@@ -37,8 +39,13 @@ public class DevToMainPage {
     public DevToSearchResultsPage search(String searchText){
         searchBox.sendKeys(searchText);
         searchBox.sendKeys(Keys.ENTER);
-
         return new DevToSearchResultsPage(this.driver, this.wait);
+    }
+
+    public DevToPodcastsPage goToPodcasts(){
+        podcastButton.click();
+        return new DevToPodcastsPage(this.driver, this.wait);
+
     }
 
 }
